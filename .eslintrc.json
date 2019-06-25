@@ -1,0 +1,48 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "babel"
+    ],
+    "rules": {
+        "indent": [
+            "error",
+            4
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "never"
+		],
+        "babel/new-cap": 1,
+        "babel/camelcase": 1,
+        "babel/no-invalid-this": 1,
+        "babel/object-curly-spacing": 1,
+        "babel/no-unused-expressions": 1,
+        "no-unused-vars": 0,
+        "babel/valid-typeof": 1
+    }
+}
