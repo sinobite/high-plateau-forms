@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import PropTypes from 'prop-types'
 import {createCn} from 'bem-react-classname'
+import autobind from 'autobind-decorator';
 
 const cn = createCn('form')
 
@@ -9,29 +9,88 @@ export const FormContext = React.createContext({
 	errors: [],
 	registerInput: () => {},
 	refreshInputValues: () => {},
-	updateFormState: () => {},
-	validateForm: () => {}
+	updateValues: () => {},
+	validateForm: () => {},
 })
 
 class Form extends Component {
 	state = {
 		values: {},
-		errors: []
+		errors: [],
 	}
 
-	inputs = {}
+	@autobind
+	registerInput(inputProps) {
+		const {name, value, error, verification} = inputProps
+		const {values} = this.state
 
-	registerInput(inputInstanse, inputProps) {
-		const {name} = inputProps
-
-		this.inputs[name] = inputInstanse
+		this.setState({
+			values: {
+				...values,
+				[name]: {
+					value,
+					error,
+					verification
+				}
+			}
+		})
 	}
 
-	updateFormState() {}
+	@autobind
+	updateValues(name, inputValues) {
+		const {value} = inputValues
+		const {values} = this.state
+
+		values[name] = {
+			...values[name],
+			value
+		}
+
+		this.setState({
+			values: {...values}
+		})
+	}
+
+	@autobind
+	setInputError(name, error) {
+		const {values} = this.state
+
+		values[name] = {
+			...values[name],
+			error
+		}
+
+		this.setState({
+			values: {...values}
+		})
+	}
+
 
 	refreshInputValues() {}
 
-	validateForm() {}
+	@autobind
+	verifyInput(fieldName) {
+		const {values} = this.state
+		const {value, verification} = values[fieldName]
+
+		const verifyError = verification(value)
+
+		if(verifyError) {
+			this.setInputError(fieldName, verifyError.error)
+		} else {
+			this.setInputError(fieldName, '')
+		}
+	}
+
+	@autobind
+	validateForm() {
+		const {values} = this.state
+
+		Object.keys(values).forEach((fieldName) => {
+			this.verifyInput(fieldName)
+		})
+
+	}
 
 	render() {
 		return (
@@ -39,17 +98,18 @@ class Form extends Component {
 				<FormContext.Provider value={{
 					...this.state,
 					registerInput: this.registerInput,
-					updateFormState: this.updateFormState,
+					updateValues: this.updateValues,
 					refreshInputValues: this.refreshInputValues,
 					validateForm: this.validateForm,
 				}}>
 					{this.props.children}
 				</FormContext.Provider>
+
+				<div role='presentation' onClick={this.validateForm}>validate</div>
 			</form>
 		)
 	}
 }
 
-Form.propTypes = {}
 
 export default Form
