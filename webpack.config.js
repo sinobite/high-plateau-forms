@@ -3,13 +3,22 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
-    entry: './src/example/index.js',
+    entry: './src/example/index.tsx',
     module: {
         rules: [
+            // {
+            //     test: /\.(js|jsx)$/,
+            //     exclude: /node_modules/,
+            //     use: ['babel-loader'],
+            // },
             {
-                test: /\.(js|jsx)$/,
+                test: /\.(ts(x?)|js|jsx)$/,
                 exclude: /node_modules/,
-                use: ['babel-loader'],
+                use: [
+                    {
+                        loader: "ts-loader"
+                    }
+                ]
             },
             {
                 test: /\.scss$/,
@@ -24,7 +33,7 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['*', '.jsx', '.js', '.json'],
+        extensions: ['*', '.jsx', '.js', '.json', '.ts', '.tsx'],
     },
     output: {
         path: __dirname + '/www/static',

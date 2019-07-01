@@ -1,4 +1,3 @@
-import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import TestInput from './TestInput'
@@ -9,6 +8,7 @@ ReactDOM.render(
         its alive
         <Form>
             <TestInput name='testInput' value='testvalue' />
+            <TestInput name='testInput2' value='testvalue2' />
         </Form>
     </div>,
      document.getElementById('app')

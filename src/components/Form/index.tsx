@@ -1,45 +1,51 @@
 import React, {Component} from 'react'
 import {createCn} from 'bem-react-classname'
-import autobind from 'autobind-decorator';
+import {boundMethod as autobind} from 'autobind-decorator'
+import {InputPropsTypes} from "./types"
 
 const cn = createCn('form')
 
-export const FormContext = React.createContext({
-	values: {},
-	errors: [],
-	registerInput: () => {},
-	refreshInputValues: () => {},
-	updateValues: () => {},
-	validateForm: () => {},
-})
+export const FormContext = React.createContext({})
 
-class Form extends Component {
+type FormValuesType = {
+	[key: string]: InputPropsTypes;
+}
+
+type Props = {}
+type State = {
+	values: FormValuesType;
+}
+
+
+class Form extends Component<Props, State> {
+
 	state = {
-		values: {},
-		errors: [],
+		values: {}
 	}
 
 	@autobind
-	registerInput(inputProps) {
+	registerInput(inputProps: InputPropsTypes) {
 		const {name, value, error, verification} = inputProps
-		const {values} = this.state
+		const {values}: any = this.state
+
+		values[name] = {
+			name,
+			value,
+			error,
+			verification
+		}
 
 		this.setState({
 			values: {
-				...values,
-				[name]: {
-					value,
-					error,
-					verification
-				}
+				...values
 			}
 		})
 	}
 
 	@autobind
-	updateValues(name, inputValues) {
+	updateValues(name: string, inputValues: InputPropsTypes) {
 		const {value} = inputValues
-		const {values} = this.state
+		const {values}: any = this.state
 
 		values[name] = {
 			...values[name],
@@ -52,8 +58,8 @@ class Form extends Component {
 	}
 
 	@autobind
-	setInputError(name, error) {
-		const {values} = this.state
+	setInputError(name: string, error: string) {
+		const {values}: any = this.state
 
 		values[name] = {
 			...values[name],
@@ -63,14 +69,14 @@ class Form extends Component {
 		this.setState({
 			values: {...values}
 		})
-	}
 
+	}
 
 	refreshInputValues() {}
 
 	@autobind
-	verifyInput(fieldName) {
-		const {values} = this.state
+	verifyInput(fieldName: string) {
+		const {values}: any = this.state
 		const {value, verification} = values[fieldName]
 
 		const verifyError = verification(value)
@@ -89,7 +95,6 @@ class Form extends Component {
 		Object.keys(values).forEach((fieldName) => {
 			this.verifyInput(fieldName)
 		})
-
 	}
 
 	render() {
@@ -104,8 +109,6 @@ class Form extends Component {
 				}}>
 					{this.props.children}
 				</FormContext.Provider>
-
-				<div role='presentation' onClick={this.validateForm}>validate</div>
 			</form>
 		)
 	}

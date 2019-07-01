@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import autobind from 'autobind-decorator'
+import {boundMethod as autobind} from 'autobind-decorator'
 import PropTypes from 'prop-types'
 import formInput from '../components/FormInput'
 
@@ -30,7 +30,7 @@ export class TestInput extends Component {
     }
 
     render() {
-        const {value, name, error, hasError} = this.props
+        const {value, name, error} = this.props
 
         return (
             <div>
