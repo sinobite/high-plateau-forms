@@ -9,7 +9,7 @@ lint:
 
 lib:
 	rm -rf lib
-	npm run build-lib
+	npm run build
 
 patch:
 	make lib
