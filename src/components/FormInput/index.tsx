@@ -1,19 +1,19 @@
 import React, {Component, ComponentType} from 'react'
-import PropTypes from 'prop-types'
 import {boundMethod as autobind} from 'autobind-decorator'
 import consumerDecorator from '../Form/consumerDecorator'
-import {InputPropsTypes} from '../Form/types'
+import {InputPropsTypes, FormValuesType} from '../Form/types'
 
 
 interface Props {
-	values: object;
-	registerInput: (p: InputPropsTypes, Input: React.ComponentType<InputPropsTypes>) => void;
-	updateValues: (name: string, inputValues: InputPropsTypes) => void;
+	context?: {
+		values: FormValuesType;
+		registerInput: (inputProps: InputPropsTypes, Input: React.ComponentType<InputPropsTypes>) => void;
+		updateValues: (name: string, inputValues: InputPropsTypes) => void;
+	}
 }
 
-const formInput = (Input: ComponentType<InputPropsTypes>) => (inputProps: InputPropsTypes) => {
+const formInput = (Input: ComponentType<InputPropsTypes & any>) => (inputProps: InputPropsTypes & any) => {
 
-	// @ts-ignore
 	@consumerDecorator
 	class FormInput extends Component<Props> {
 
@@ -21,19 +21,19 @@ const formInput = (Input: ComponentType<InputPropsTypes>) => (inputProps: InputP
 			super(props)
 			const {verification} = Input.defaultProps
 
-			props.registerInput({verification, ...inputProps}, Input)
+			props.context.registerInput({verification, ...inputProps}, Input)
 		}
 
 		@autobind
-		onChange(inputValues: InputPropsTypes) { // {value}
+		onChange(inputValues: InputPropsTypes) {
 			const {name} = inputProps
 
-			this.props.updateValues(name, inputValues)
+			this.props.context.updateValues(name, inputValues)
 		}
 
 		@autobind
 		getProps() {
-			const {values} = this.props
+			const {values} = this.props.context
 			const {name} = inputProps
 
 			return {
@@ -43,7 +43,6 @@ const formInput = (Input: ComponentType<InputPropsTypes>) => (inputProps: InputP
 		}
 
 		render() {
-			// const values
 			const props = this.getProps()
 
 			return <Input {...props} />

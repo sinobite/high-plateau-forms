@@ -1,26 +1,24 @@
 import React, {Component} from 'react'
 import {createCn} from 'bem-react-classname'
 import {boundMethod as autobind} from 'autobind-decorator'
-import {InputPropsTypes} from "./types"
+import {InputPropsTypes, FormValuesType} from "./types"
 
 const cn = createCn('form')
 
 export const FormContext = React.createContext({})
 
-type FormValuesType = {
-	[key: string]: InputPropsTypes;
-}
-
 type Props = {}
 type State = {
 	values: FormValuesType;
+	hasError: boolean;
 }
 
 
 class Form extends Component<Props, State> {
 
 	state = {
-		values: {}
+		values: {},
+		hasError: false
 	}
 
 	@autobind
@@ -83,8 +81,12 @@ class Form extends Component<Props, State> {
 
 		if(verifyError) {
 			this.setInputError(fieldName, verifyError.error)
+
+			return true
 		} else {
 			this.setInputError(fieldName, '')
+
+			return false
 		}
 	}
 
@@ -92,9 +94,19 @@ class Form extends Component<Props, State> {
 	validateForm() {
 		const {values} = this.state
 
-		Object.keys(values).forEach((fieldName) => {
-			this.verifyInput(fieldName)
+		const errors = Object.keys(values).reduce((acc, fieldName) => {
+			const hasError = this.verifyInput(fieldName)
+
+			if (hasError) acc.push(fieldName)
+
+			return acc
+		}, [])
+
+		this.setState({
+			hasError: !!errors.length
 		})
+
+		return errors
 	}
 
 	render() {
