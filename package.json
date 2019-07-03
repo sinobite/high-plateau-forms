@@ -1,11 +1,10 @@
 {
   "name": "high-plateau-forms",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --config ./webpack.config.js --mode development",
-    "build": "cross-env NODE_ENV=production webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "./node_modules/.bin/eslint src"
   },
@@ -37,7 +36,6 @@
     "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.12.0",
     "react-hot-loader": "^4.11.0",
-    "redux-devtools": "^3.5.0",
     "sass-loader": "^7.1.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
