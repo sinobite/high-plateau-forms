@@ -1,20 +1,13 @@
 import React, {Component} from 'react'
 import {createCn} from 'bem-react-classname'
 import {boundMethod as autobind} from 'autobind-decorator'
-import {InputPropsTypes, FormValuesType} from "./types"
 
 const cn = createCn('form')
 
 export const FormContext = React.createContext({})
 
-type Props = {}
-type State = {
-	values: FormValuesType;
-	hasError: boolean;
-}
 
-
-class Form extends Component<Props, State> {
+class Form extends Component {
 
 	state = {
 		values: {},
@@ -22,9 +15,9 @@ class Form extends Component<Props, State> {
 	}
 
 	@autobind
-	registerInput(inputProps: InputPropsTypes) {
+	registerInput(inputProps) {
 		const {name, value, error, verification} = inputProps
-		const {values}: any = this.state
+		const {values} = this.state
 
 		values[name] = {
 			name,
@@ -41,9 +34,9 @@ class Form extends Component<Props, State> {
 	}
 
 	@autobind
-	updateValues(name: string, inputValues: InputPropsTypes) {
+	updateValues(name, inputValues) {
 		const {value} = inputValues
-		const {values}: any = this.state
+		const {values} = this.state
 
 		values[name] = {
 			...values[name],
@@ -56,8 +49,8 @@ class Form extends Component<Props, State> {
 	}
 
 	@autobind
-	setInputError(name: string, error: string) {
-		const {values}: any = this.state
+	setInputError(name, error) {
+		const {values} = this.state
 
 		values[name] = {
 			...values[name],
@@ -73,8 +66,8 @@ class Form extends Component<Props, State> {
 	refreshInputValues() {}
 
 	@autobind
-	verifyInput(fieldName: string) {
-		const {values}: any = this.state
+	verifyInput(fieldName) {
+		const {values} = this.state
 		const {value, verification} = values[fieldName]
 
 		const verifyError = verification(value)

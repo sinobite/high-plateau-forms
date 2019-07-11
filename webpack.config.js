@@ -1,25 +1,20 @@
 const webpack = require('webpack')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
-    entry: './src/example/index.tsx',
+    entry: './src/example/index.jsx',
     module: {
         rules: [
             {
-                test: /\.(ts(x?)|js|jsx)$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                use: [
-                    {
-                        loader: "ts-loader"
-                    }
-                ]
+                use: ['babel-loader'],
             },
             {enforce: 'pre', test: /\.js$/, loader: 'source-map-loader'}
         ]
     },
     resolve: {
-        extensions: ['*', '.jsx', '.js', '.json', '.ts', '.tsx'],
+        extensions: ['*', '.jsx', '.js', '.json'],
     },
     output: {
         path: __dirname + '/www/static',

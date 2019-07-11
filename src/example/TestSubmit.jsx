@@ -2,13 +2,7 @@ import React, {Component} from 'react'
 import {boundMethod as autobind} from 'autobind-decorator'
 import Submit from '../components/Submit'
 
-
-interface Props {
-    handleSubmit: () => void;
-    hasError: boolean;
-}
-
-export class TestSubmit extends Component<Props> {
+export class TestSubmit extends Component {
 
     @autobind
     onClick() {

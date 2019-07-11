@@ -1,22 +1,22 @@
-import React, {Component, ComponentType} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types'
 import {boundMethod as autobind} from 'autobind-decorator'
 import consumerDecorator from '../Form/consumerDecorator'
-import {SubmitPropsTypes, FormValuesType} from '../Form/types';
 
 
-interface Props {
-    context?: {
-        values: FormValuesType;
-        validateForm: () => Array<string>;
-        hasError: boolean
-    };
-    onChange?: (formValues: FormValuesType) => void
-}
-
-const submitFabric = (SubmitElement: ComponentType<SubmitPropsTypes & any>) => (submitElementProps: SubmitPropsTypes & any) => {
+const submitFabric = (SubmitElement) => (submitElementProps) => {
 
     @consumerDecorator
-    class Submit extends Component<Props> {
+    class Submit extends Component {
+
+        static propTypes = {
+            context: PropTypes.shape({
+                values: PropTypes.object,
+                registerInput: PropTypes.func,
+                updateValues: PropTypes.func,
+            }),
+            onChange: PropTypes.func
+        }
 
         @autobind
         handleSubmit() {
