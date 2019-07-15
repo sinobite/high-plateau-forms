@@ -12,3 +12,7 @@ minor:
 
 major:
 	bash ./buildUtils/build_version.sh -M
+
+lib:
+	rm -rf lib
+	npm run build-lib
