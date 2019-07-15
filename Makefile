@@ -4,15 +4,18 @@ start:
 lint:
 	npm run eslint
 
-patch:
-	bash ./buildUtils/build_version.sh -p
-
-minor:
-	bash ./buildUtils/build_version.sh -m
-
-major:
-	bash ./buildUtils/build_version.sh -M
-
 lib:
 	rm -rf lib
 	npm run build-lib
+
+patch:
+	make lib
+	bash ./buildUtils/build_version.sh -p
+
+minor:
+	make lib
+	bash ./buildUtils/build_version.sh -m
+
+major:
+	make lib
+	bash ./buildUtils/build_version.sh -M
