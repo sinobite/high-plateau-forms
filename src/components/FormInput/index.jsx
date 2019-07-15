@@ -1,54 +1,67 @@
-import React, {Component} from 'react'
-import PropTypes from 'prop-types'
+// @flow
+import * as React from 'react'
 import {boundMethod as autobind} from 'autobind-decorator'
 import consumerDecorator from '../Form/consumerDecorator'
+import {VerificationFunctionType, InputValueType, InputPropsType, FormContextType} from '../Form/types'
 
-const formInput = (Input) => (inputProps) => {
 
-	@consumerDecorator
-	class FormInput extends Component {
+type PropsType = {
+    context: FormContextType
+}
 
-		static propTypes = {
-			context: PropTypes.shape({
-				values: PropTypes.object,
-				registerInput: PropTypes.func,
-				updateValues: PropTypes.func,
-			})
-		}
+type DecoratedInputPropsType = {
+    [key: string]: InputValueType,
+    onChange: (InputValueType) => void
+}
 
-		constructor(props) {
-			super(props)
-			const {verification} = Input.defaultProps
 
-			props.context.registerInput({verification, ...inputProps}, Input)
-		}
+const formInput = (Input: React.ComponentType<InputPropsType>): any => (inputProps: InputPropsType): React.ComponentType<DecoratedInputPropsType> => {
 
-		@autobind
-		onChange(inputValues) {
-			const {name} = inputProps
+    @consumerDecorator
+    class FormInput extends React.Component<PropsType> {
 
-			this.props.context.updateValues(name, inputValues)
-		}
+        constructor(props: PropsType) {
+            super(props)
 
-		@autobind
-		getProps() {
-			const {values} = this.props.context
-			const {name} = inputProps
+            const verification = FormInput.getVerification()
 
-			return {
-				...values[name],
-				onChange: this.onChange
-			}
-		}
+            props.context.registerInput({verification, ...inputProps}, Input)
+        }
 
-		render() {
-			const props = this.getProps()
+        static getVerification(): null | VerificationFunctionType {
+            if (inputProps.verification) return inputProps.verification
 
-			return <Input {...props} />
-		}
-	}
+            if (Input.defaultProps && Input.defaultProps.verification) return Input.defaultProps.verification
 
-	return <FormInput />
+            return null
+        }
+
+        @autobind
+        onChange(inputValues: InputValueType) {
+            const {name} = inputProps
+
+            this.props.context.updateValues(name, inputValues)
+        }
+
+        @autobind
+        getProps(): DecoratedInputPropsType {
+            const {values} = this.props.context
+            const {name} = inputProps
+
+            return {
+                ...values[name],
+                onChange: this.onChange
+            }
+        }
+
+        render() {
+            const props = this.getProps()
+
+            return <Input {...props} />
+        }
+    }
+
+    return <FormInput/>
 }
 
 export default formInput

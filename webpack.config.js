@@ -1,5 +1,6 @@
 const webpack = require('webpack')
 const TerserPlugin = require('terser-webpack-plugin')
+const FlowWebpackPlugin = require('flow-webpack-plugin')
 
 module.exports = {
     entry: './src/example/index.jsx',
@@ -24,7 +25,8 @@ module.exports = {
     },
     devtool: process.env.NODE_ENV !== 'production' ? 'source-map' : false,
     plugins: [
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        // new FlowWebpackPlugin()
     ],
     devServer: {
         contentBase: './www/static',

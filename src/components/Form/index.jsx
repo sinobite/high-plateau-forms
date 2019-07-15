@@ -1,122 +1,133 @@
+// @flow
 import React, {Component} from 'react'
 import {createCn} from 'bem-react-classname'
 import {boundMethod as autobind} from 'autobind-decorator'
+import {InputPropsType, InputValueType, InputErrorType} from './types'
 
 const cn = createCn('form')
 
 export const FormContext = React.createContext({})
 
 
-class Form extends Component {
+type FormStateType = {
+    values: Object,
+    hasError: boolean
+}
 
-	state = {
-		values: {},
-		hasError: false
-	}
+class Form extends Component<{}, FormStateType> {
 
-	@autobind
-	registerInput(inputProps) {
-		const {name, value, error, verification} = inputProps
-		const {values} = this.state
+    state = {
+        values: {},
+        hasError: false
+    }
 
-		values[name] = {
-			name,
-			value,
-			error,
-			verification
-		}
+    @autobind
+    registerInput(inputProps: InputPropsType) {
+        const {name, value, error, verification} = inputProps
+        const {values} = this.state
 
-		this.setState({
-			values: {
-				...values
-			}
-		})
-	}
+        values[name] = {
+            name,
+            value,
+            error,
+            verification
+        }
 
-	@autobind
-	updateValues(name, inputValues) {
-		const {value} = inputValues
-		const {values} = this.state
+        this.setState({
+            values: {
+                ...values
+            }
+        })
+    }
 
-		values[name] = {
-			...values[name],
-			value
-		}
+    @autobind
+    updateValues(name: string, inputValues: InputValueType) {
+        const {value} = inputValues
+        const {values} = this.state
 
-		this.setState({
-			values: {...values}
-		})
-	}
+        values[name] = {
+            ...values[name],
+            value
+        }
 
-	@autobind
-	setInputError(name, error) {
-		const {values} = this.state
+        this.setState({
+            values: {...values}
+        })
+    }
 
-		values[name] = {
-			...values[name],
-			error
-		}
+    @autobind
+    setInputError(name: string, error: InputErrorType) {
+        const {values} = this.state
 
-		this.setState({
-			values: {...values}
-		})
+        values[name] = {
+            ...values[name],
+            error
+        }
 
-	}
+        this.setState({
+            values: {...values}
+        })
 
-	refreshInputValues() {}
+    }
 
-	@autobind
-	verifyInput(fieldName) {
-		const {values} = this.state
-		const {value, verification} = values[fieldName]
+    @autobind
+    verifyInput(fieldName: string): boolean {
+        const {values} = this.state
+        const {value, verification} = values[fieldName]
 
-		const verifyError = verification(value)
+        if (!verification) {
+            this.setInputError(fieldName, '')
 
-		if(verifyError) {
-			this.setInputError(fieldName, verifyError.error)
+            return false
+        }
 
-			return true
-		} else {
-			this.setInputError(fieldName, '')
+        const verifyError = verification(value)
 
-			return false
-		}
-	}
+        if (verifyError) {
+            this.setInputError(fieldName, verifyError.error)
 
-	@autobind
-	validateForm() {
-		const {values} = this.state
+            return true
+        } else {
+            this.setInputError(fieldName, '')
 
-		const errors = Object.keys(values).reduce((acc, fieldName) => {
-			const hasError = this.verifyInput(fieldName)
+            return false
+        }
+    }
 
-			if (hasError) acc.push(fieldName)
+    @autobind
+    validateForm(): Array<string> {
+        const {values} = this.state
 
-			return acc
-		}, [])
+        const errors = Object.keys(values).reduce((acc: Array, fieldName: string): Array<string> => {
+            const hasError = this.verifyInput(fieldName)
 
-		this.setState({
-			hasError: !!errors.length
-		})
+            if (hasError) acc.push(fieldName)
 
-		return errors
-	}
+            return acc
+        }, [])
 
-	render() {
-		return (
-			<form className={cn()}>
-				<FormContext.Provider value={{
-					...this.state,
-					registerInput: this.registerInput,
-					updateValues: this.updateValues,
-					refreshInputValues: this.refreshInputValues,
-					validateForm: this.validateForm,
-				}}>
-					{this.props.children}
-				</FormContext.Provider>
-			</form>
-		)
-	}
+        this.setState({
+            hasError: !!errors.length
+        })
+
+        return errors
+    }
+
+    render() {
+        return (
+            <form className={cn()}>
+                <FormContext.Provider value={{
+                    ...this.state,
+                    registerInput: this.registerInput,
+                    updateValues: this.updateValues,
+                    refreshInputValues: this.refreshInputValues,
+                    validateForm: this.validateForm,
+                }}>
+                    {this.props.children}
+                </FormContext.Provider>
+            </form>
+        )
+    }
 }
 
 

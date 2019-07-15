@@ -1,22 +1,19 @@
+// @flow
 import React, {Component} from 'react';
-import PropTypes from 'prop-types'
 import {boundMethod as autobind} from 'autobind-decorator'
 import consumerDecorator from '../Form/consumerDecorator'
+import {FormContextType} from '../Form/types'
 
 
-const submitFabric = (SubmitElement) => (submitElementProps) => {
+type PropsType = {
+    context: FormContextType,
+    onChange?: Function
+}
+
+const submitFabric = (SubmitElement: React.ComponentType<PropsType>): Function => (submitElementProps: PropsType): React.ComponentType => {
 
     @consumerDecorator
-    class Submit extends Component {
-
-        static propTypes = {
-            context: PropTypes.shape({
-                values: PropTypes.object,
-                registerInput: PropTypes.func,
-                updateValues: PropTypes.func,
-            }),
-            onChange: PropTypes.func
-        }
+    class Submit extends Component<PropsType> {
 
         @autobind
         handleSubmit() {
