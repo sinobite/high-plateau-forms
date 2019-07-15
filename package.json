@@ -46,7 +46,6 @@
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
     "autobind-decorator": "^2.4.0",
-    "bem-react-classname": "^1.0.1",
     "es6-promise": "^4.2.8",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",

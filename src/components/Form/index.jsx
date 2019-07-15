@@ -1,10 +1,8 @@
 // @flow
 import React, {Component} from 'react'
-import {createCn} from 'bem-react-classname'
 import {boundMethod as autobind} from 'autobind-decorator'
 import {InputPropsType, InputValueType, InputErrorType} from './types'
 
-const cn = createCn('form')
 
 export const FormContext = React.createContext({})
 
@@ -115,7 +113,7 @@ class Form extends Component<{}, FormStateType> {
 
     render() {
         return (
-            <form className={cn()}>
+            <form>
                 <FormContext.Provider value={{
                     ...this.state,
                     registerInput: this.registerInput,
